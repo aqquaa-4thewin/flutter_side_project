@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatefulWidget {
-  Icon icon = Icon(Icons.add);
-  CustomButton({super.key, required icon});
+  Icon iconSymbol = Icon(Icons.add);
+  bool ismini;
+  // Constructor with required iconSymbol parameter
+  CustomButton({super.key, required this.iconSymbol, this.ismini = false});
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -11,6 +13,15 @@ class CustomButton extends StatefulWidget {
 class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+        child: FloatingActionButton(
+            onPressed: () {},
+            shape: CircleBorder(),
+            mini: widget.ismini,
+            elevation: 10,
+            backgroundColor: Color(0xFF252525),
+            foregroundColor: Colors.white,
+            highlightElevation: 33,
+            child: widget.iconSymbol));
   }
 }
