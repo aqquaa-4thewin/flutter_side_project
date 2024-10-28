@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_side_project/pages/add-note.dart';
-import 'package:flutter_side_project/theme/colors.dart';
 import 'package:flutter_side_project/widgets/custom-button.dart';
 
 class HomePageEmpty extends StatefulWidget {
@@ -16,7 +15,7 @@ class _HomePageEmptyState extends State<HomePageEmpty> {
     return Scaffold(
       backgroundColor: const Color(0xFF252525),
       appBar: AppBar(
-        backgroundColor: Color(0xFF252525),
+        backgroundColor: const Color(0xFF252525),
         title: const Text(
           "Notes",
           style: TextStyle(color: Colors.white, fontSize: 30),
@@ -25,7 +24,7 @@ class _HomePageEmptyState extends State<HomePageEmpty> {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: CustomButton(
-                iconSymbol: Icon(Icons.search),
+                iconSymbol: const Icon(Icons.search),
                 ismini: true,
               ))
         ],
@@ -45,7 +44,16 @@ class _HomePageEmptyState extends State<HomePageEmpty> {
           ],
         ),
       ),
-      floatingActionButton: CustomButton(iconSymbol: Icon(Icons.add)),
+      floatingActionButton: CustomButton(
+        iconSymbol: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => const AddNotePage(),
+            ),
+          );
+        },
+      ),
     );
   }
 }
