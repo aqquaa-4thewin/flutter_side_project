@@ -3,12 +3,15 @@ import 'package:flutter_side_project/models/note.dart';
 import 'package:flutter_side_project/theme/colors.dart' as theme;
 import 'package:flutter_side_project/controllers/note-controller.dart'
     as noteController;
+import 'package:flutter_side_project/widgets/custom-button.dart';
 
 // ignore: must_be_immutable
 class NotePage extends StatefulWidget {
   final Note note;
   bool isEditPage;
-  NotePage({super.key, required this.note, this.isEditPage = false});
+  int index;
+  NotePage(
+      {super.key, required this.note, this.isEditPage = false, this.index = 0});
 
   @override
   State<NotePage> createState() => _NotePageState();
@@ -17,6 +20,7 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   late Note note;
   late bool isEditPage;
+  late int index;
   late TextEditingController titleController;
   late TextEditingController descriptionController;
   String title = '';
@@ -26,7 +30,8 @@ class _NotePageState extends State<NotePage> {
     super.initState();
     note = widget.note; // Initialize the note from the widget
     title = widget.note.title;
-
+    desc = note.description;
+    index = widget.index;
     isEditPage = widget.isEditPage;
     titleController = TextEditingController(text: note.title);
     descriptionController = TextEditingController(text: note.description);
@@ -42,23 +47,41 @@ class _NotePageState extends State<NotePage> {
         iconTheme: IconThemeData(color: theme.secondaryColor),
         actions: [
           isEditPage
-              ? IconButton(
+              ? CustomButton(
+                  iconSymbol: const Icon(Icons.save_alt_outlined),
                   onPressed: () {
+                    setState(() {});
                     Note newNote = Note(
-                        ID: DateTime.now().millisecondsSinceEpoch,
+                        ID: note.ID,
                         title: title,
                         description: desc,
-                        color: note.color);
+                        color: theme.noteColors[index]);
                     if (title.isNotEmpty) {
-                      noteController.UpdateNote(note, newNote);
+                      noteController.updateNote(note, newNote);
                     } else {
                       noteController.deleteNote(note);
                     }
                   },
-                  icon: const Icon(Icons.save_alt_outlined),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 20, 0))
+              : CustomButton(
+                  iconSymbol: Icon(
+                    Icons.delete_forever,
+                  ),
                   padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                )
-              : const Spacer(),
+                  onPressed: () {
+                    setState(() {});
+                    AlertDialog(
+                      actions: [
+                        CustomButton(
+                            iconSymbol: Icon(Icons.check),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0)),
+                        CustomButton(
+                            iconSymbol: Icon(Icons.close),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0))
+                      ],
+                    );
+                  },
+                ),
         ],
       ),
       body: Center(
@@ -69,7 +92,7 @@ class _NotePageState extends State<NotePage> {
             children: [
               Card.filled(
                 margin: const EdgeInsets.all(30),
-                color: note.color,
+                color: theme.noteColors[index],
                 child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: !isEditPage
@@ -77,6 +100,7 @@ class _NotePageState extends State<NotePage> {
                             children: [
                               Text(
                                 note.title,
+                                textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28,

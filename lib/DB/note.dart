@@ -1,4 +1,3 @@
-import 'package:flutter_side_project/models/note.dart';
 import 'package:flutter_side_project/shared/shared.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -28,7 +27,6 @@ class NoteDatabase {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-
     _database = await _initDB('note.db');
     return _database!;
   }
@@ -42,43 +40,46 @@ class NoteDatabase {
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
-CREATE TABLE $tableNotes ( 
+CREATE TABLE $tableNotes (
   ${NoteFields.ID} $idType, 
   ${NoteFields.title} $textType,
   ${NoteFields.description} $textType,
-  ${NoteFields.color} $textType,
-  )
+  ${NoteFields.color} $textType
+)
 ''');
   }
 
-  Future<int> create(Note note) async {
+  Future<int> create(Map<String, Object> note) async {
     final db = await instance.database;
-
-    await db.rawInsert(
-        'INSERT INTO $tableNotes(${NoteFields.title}, ${NoteFields.ID}) VALUES(?, ?)',
-        [NoteFields.color, NoteFields.description]);
-
-    final result = db.insert(tableNotes, note.toMap());
-
-    return result;
+    int k = await db.insert(tableNotes, note);
+    return k;
   }
 
-  Future<int> update(Note note) async {
+  Future<int> update(Map<String, Object> note) async {
     final db = await instance.database;
 
     return db.update(
       tableNotes,
-      note.toMap(),
+      note,
       where: '${NoteFields.ID} = ?',
-      whereArgs: [note.ID],
+      whereArgs: [note['ID']],
     );
   }
 
-  Future<List<Note>> getAllNotes() async {
+  Future<int> delete(Map<String, Object> note) async {
+    final db = await instance.database;
+
+    return db.delete(
+      tableNotes,
+      where: '${NoteFields.ID} = ?',
+      whereArgs: [note['ID']],
+    );
+  }
+
+  Future getAllNotes() async {
     final db = await instance.database;
 
     final results = await db.query(tableNotes);
-    print(results);
-    return results.map((json) => Note.fromMap(json)).toList();
+    return results;
   }
 }

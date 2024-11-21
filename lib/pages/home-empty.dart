@@ -23,10 +23,7 @@ class _HomePageEmptyState extends State<HomePageEmpty> {
         actions: [
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CustomButton(
-                iconSymbol: const Icon(Icons.search),
-                ismini: true,
-              ))
+              child: CustomButton(iconSymbol: const Icon(Icons.search)))
         ],
       ),
       body: Center(

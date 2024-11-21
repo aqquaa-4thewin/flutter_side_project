@@ -56,7 +56,6 @@ class _CustomAppbarState extends State<CustomAppbar> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: CustomButton(
                   iconSymbol: const Icon(Icons.search),
-                  ismini: true,
                   onPressed: () {
                     setState(() {
                       if (visableSearch) searchFieldController.clear();

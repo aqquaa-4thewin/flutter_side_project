@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_side_project/models/note.dart';
+import 'package:flutter_side_project/pages/home-screen.dart';
 import 'package:flutter_side_project/shared/shared.dart';
 import 'package:flutter_side_project/theme/colors.dart' as theme;
+import 'package:flutter_side_project/controllers/note-controller.dart'
+    as noteController;
+import 'package:flutter_side_project/widgets/custom-button.dart';
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({super.key});
@@ -27,20 +31,25 @@ class _AddNotePageState extends State<AddNotePage> {
           color: theme.secondaryColor,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save_alt_outlined),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Note note = Note(
-                    ID: DateTime.now().millisecondsSinceEpoch,
-                    title: title,
-                    description: desctiption);
-                demoNotes.add(note);
-                noteStreamController.sink.add("add");
-              }
-            },
-            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-          )
+          CustomButton(
+              iconSymbol: const Icon(Icons.save_alt_outlined),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  Note note = Note(
+                      ID: DateTime.now().millisecondsSinceEpoch,
+                      title: title,
+                      description: desctiption);
+                  noteController.addNote(note);
+                  noteStreamController.sink.add("add");
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreenPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              },
+              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0))
         ],
       ),
       body: Center(

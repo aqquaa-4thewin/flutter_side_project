@@ -24,3 +24,4 @@ List<Note> filterdnoteList = demoNotes;
 const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
 const textType = 'TEXT NOT NULL';
 const integerType = 'INTEGER NOT NULL';
+int currentColorIndex = 0;

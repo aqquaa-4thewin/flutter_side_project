@@ -7,8 +7,6 @@ import 'package:flutter_side_project/shared/shared.dart';
 import 'package:flutter_side_project/widgets/custom-appbar.dart';
 import 'package:flutter_side_project/widgets/custom-button.dart';
 import 'package:flutter_side_project/theme/colors.dart' as theme;
-import 'package:flutter_side_project/controllers/note-controller.dart'
-    as noteController;
 
 class HomeScreenPage extends StatefulWidget {
   const HomeScreenPage({super.key});
@@ -19,17 +17,12 @@ class HomeScreenPage extends StatefulWidget {
 
 class _HomeScreenPageState extends State<HomeScreenPage> {
   NoteDatabase noteDatabase = NoteDatabase.instance;
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    noteController.getAllNotesFromDB();
-    // demoNotes.insert(
-    //     0,
-    //     Note(
-    //       ID: 0,
-    //       title: "All",
-    //       description: u,
-    //     ));
+    print("notes are $demoNotes");
     noteStreamController.sink.add("event");
   }
 
@@ -44,10 +37,16 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             body: Stack(children: [
               Center(
                 child: filterdnoteList.isEmpty
-                    ? const Center(child: Text('No tasks found'))
+                    ? Center(
+                        child: Text(
+                        'No Notes found',
+                        style: TextStyle(
+                            color: theme.secondaryColor, fontSize: 30),
+                      ))
                     : ListView.separated(
                         itemBuilder: (context, index) {
-                          return NoteCard(filterdnoteList[index]);
+                          return NoteCard(filterdnoteList[index],
+                              index % theme.noteColors.length);
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return const SizedBox(
@@ -63,10 +62,16 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                 child: CustomButton(
                   iconSymbol: const Icon(Icons.add),
                   onPressed: () {
-                    Navigator.of(context).push(
+                    Navigator.of(context)
+                        .push(
                       MaterialPageRoute<void>(
                         builder: (BuildContext context) => const AddNotePage(),
                       ),
+                    )
+                        .then(
+                      (value) {
+                        noteStreamController.sink.add("add");
+                      },
                     );
                   },
                 ),
@@ -76,24 +81,26 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
         });
   }
 
-  Widget NoteCard(Note note) {
+  Widget NoteCard(Note note, index) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => NotePage(note: note),
+            builder: (BuildContext context) =>
+                NotePage(note: note, index: index),
           ),
         );
       },
       child: Card.filled(
         margin: const EdgeInsets.all(30),
-        color: note.color,
+        color: theme.noteColors[index],
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
               Text(
                 note.title,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 28,
